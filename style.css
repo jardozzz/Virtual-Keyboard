@@ -1,6 +1,26 @@
 *{
     margin-inline-end: 0px;
     box-sizing: border-box;
+    transition:0.2s
+}
+.wrapper{
+    margin:0 auto;
+    text-align: center;
+    color:orangered;
+    margin-bottom:10px;
+}
+textarea{
+    display: block;
+    height:300px;
+    width:700px;
+    margin:0 auto;
+    margin-bottom: 10px;
+    padding-bottom: 20px;
+    outline:none;
+}
+.comment{
+    text-align:center;
+    font-size:15px;
 }
 .row{
     display: inline-block;
@@ -69,4 +89,14 @@
 }
 .Space{
     width:323px
+}
+.key:hover:not(.active){
+    background-color: rgb(69, 230, 69);
+    border:1px solid rgb(255, 179, 38);
+
+}
+.active{
+    border-radius:100px;
+    background-color: darkgreen;
+    
 }
