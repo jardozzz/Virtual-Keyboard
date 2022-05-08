@@ -72,7 +72,8 @@ let b = textarea.selectionStart;
 let q = textarea.selectionEnd;
 let Caps = false;
 let Shift = false;
-let currentType;
+let currentType = eng;
+
 function currentKeyboard() {
   if (localStorage.getItem('engLang') === 'true' && Caps === true && Shift === true) {
     currentType = engCapsShift;
@@ -226,33 +227,38 @@ function handlekeydown(e) {
   e.preventDefault();
   switch (key1) {
     case 'Alt':
-      if (e.location === 1 && e.key !== 'AltGraph') {
-        document.querySelectorAll('.Alt')[0].classList.toggle('active');
-        if (document.querySelector('.Ctrl').classList.contains('active')) {
-          if (engLang === 'false') { engLang = 'true'; } else { engLang = 'false'; }
-          localStorage.setItem('engLang', engLang);
-        }
-      } else { document.querySelectorAll('.Alt')[1].classList.toggle('active'); }
+      if (e.repeat === false) {
+        if (e.location === 1 && e.key !== 'AltGraph') {
+          document.querySelectorAll('.Alt')[0].classList.toggle('active');
+          if (document.querySelector('.Ctrl').classList.contains('active')) {
+            if (engLang === 'false') { engLang = 'true'; } else { engLang = 'false'; }
+            localStorage.setItem('engLang', engLang);
+          }
+        } else { document.querySelectorAll('.Alt')[1].classList.toggle('active'); }
+      }
       break;
     case 'AltGraph': document.querySelectorAll('.Alt')[1].classList.toggle('active');
       break;
     case 'Control':
-      if (e.location === 1) {
-        document.querySelectorAll('.Ctrl')[0].classList.toggle('active');
-        if (document.querySelector('.Alt').classList.contains('active')) {
-          if (engLang === 'false') { engLang = 'true'; } else { engLang = 'false'; }
-          localStorage.setItem('engLang', engLang);
-        }
-      } else { document.querySelectorAll('.Ctrl')[1].classList.toggle('active'); }
+      if (e.repeat === false) {
+        if (e.location === 1) {
+          document.querySelectorAll('.Ctrl')[0].classList.toggle('active');
+          if (document.querySelector('.Alt').classList.contains('active')) {
+            if (engLang === 'false') { engLang = 'true'; } else { engLang = 'false'; }
+            localStorage.setItem('engLang', engLang);
+          }
+        } else { document.querySelectorAll('.Ctrl')[1].classList.toggle('active'); }
+      }
       break;
     case 'Meta':
       e.preventDefault();
       Array.prototype.filter.call(document.querySelectorAll('.key'), (h) => h.innerText === 'Win')[0].classList.toggle('active');
       break;
     case 'CapsLock':
-      document.querySelector('.CapsLock').classList.toggle('active');
-
-      Caps = !Caps;
+      if (e.repeat === false) {
+        document.querySelector('.CapsLock').classList.toggle('active');
+        Caps = !Caps;
+      }
 
       break;
     case 'Tab':
