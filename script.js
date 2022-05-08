@@ -3,7 +3,7 @@ const textarea = document.createElement('textarea');
 const keyboard = document.createElement('div');
 const comment = document.createElement('h2');
 comment.classList.add('comment');
-comment.innerHTML = 'Клавиатура создана в Windows <br> Переключение языков по комбинации LCtrl+LAlt';
+comment.innerHTML = 'Клавиатура создана в Windows <br> Переключение языков по комбинации LCtrl+LAlt <br> На некоторых системах стрелки могут отображатся некорректно,причину выяснить не удалось';
 keyboard.classList.add('keyboard');
 let clicked;
 wrapper.classList.add('wrapper');
@@ -76,12 +76,15 @@ let Shift = false;
 <<<<<<< HEAD
 let currentType = eng;
 
+<<<<<<< HEAD
 =======
 let currentType=eng;
 >>>>>>> d13181f (fix:find deply bug)
 =======
 let currentType = eng;
 >>>>>>> 9209a92 (Update script.js)
+=======
+>>>>>>> 897c0fc (fix:add some functionality)
 function currentKeyboard() {
   if (localStorage.getItem('engLang') === 'true' && Caps === true && Shift === true) {
     currentType = engCapsShift;
