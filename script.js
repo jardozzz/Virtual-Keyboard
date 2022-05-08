@@ -72,7 +72,7 @@ let b = textarea.selectionStart;
 let q = textarea.selectionEnd;
 let Caps = false;
 let Shift = false;
-let currentType=eng;
+let currentType = eng;
 function currentKeyboard() {
   if (localStorage.getItem('engLang') === 'true' && Caps === true && Shift === true) {
     currentType = engCapsShift;
