@@ -67,7 +67,8 @@ function fillwithrow() {
 }
 
 const keys = document.getElementsByClassName('key');
-let engLang = localStorage.getItem('engLang');
+let engLang = localStorage.getItem('engLang') || 'true';
+let b = textarea.selectionStart;
 let q = textarea.selectionEnd;
 let Caps = false;
 let Shift = false;
@@ -100,14 +101,17 @@ function checkDiff(arr) {
   });
 }
 
-function hadleClicks() {
+function hadleClicks(j) {
   clicked = this;
+  j.preventDefault();
+  b = textarea.selectionStart;
   q = textarea.selectionEnd;
   textarea.setSelectionRange(q, q);
   textarea.focus();
   switch (this.innerHTML) {
-    case 'Enter': textarea.value = `${textarea.value.slice(0, q)}\n${textarea.value.slice(q, textarea.value.length)}`;
-      q += 1;
+    case 'Enter':
+      textarea.value = `${textarea.value.slice(0, b)}\n${textarea.value.slice(q, textarea.value.length)}`;
+      q += b - q + 1;
       break;
     case 'Ctrl': textarea.value += '';
       if (document.querySelector('.Alt').classList.contains('active')) {
@@ -125,17 +129,22 @@ function hadleClicks() {
         localStorage.setItem('engLang', engLang);
       }
       break;
-    case 'Tab': textarea.value = `${textarea.value.slice(0, q)}\t${textarea.value.slice(q, textarea.value.length)}`;
-      q += 1;
+    case 'Tab': textarea.value = `${textarea.value.slice(0, b)}\t${textarea.value.slice(q, textarea.value.length)}`;
+      q += b - q + 1;
       break;
     case 'Win': textarea.value += '';
       break;
-    case 'Backspace': if (q !== 0) {
-      textarea.value = textarea.value.slice(0, q - 1)
+    case 'Backspace':
+      if (b - q !== 0) {
+        textarea.value = textarea.value.slice(0, b)
+      + textarea.value.slice(q, textarea.value.length);
+        q += b - q;
+      } else if (q !== 0) {
+        textarea.value = textarea.value.slice(0, q - 1)
       + textarea.value.slice(q, textarea.value.length);
 
-      q -= 1;
-    }
+        q -= 1;
+      }
 
       break;
     case 'CapsLock':
@@ -143,20 +152,25 @@ function hadleClicks() {
       Caps = !Caps;
 
       break;
-    case 'Space': textarea.value = `${textarea.value.slice(0, q)} ${textarea.value.slice(q, textarea.value.length)}`;
-      q += 1;
+    case 'Space': textarea.value = `${textarea.value.slice(0, b)} ${textarea.value.slice(q, textarea.value.length)}`;
+      q += b - q + 1;
       break;
     case 'Del':
-      textarea.value = textarea.value.slice(0, textarea.selectionStart)
-      + textarea.value.slice(textarea.selectionStart + 1, textarea.value.length);
-
+      if (b - q !== 0) {
+        textarea.value = textarea.value.slice(0, b)
+        + textarea.value.slice(q, textarea.value.length);
+      } else {
+        textarea.value = textarea.value.slice(0, b)
+      + textarea.value.slice(q + 1, textarea.value.length);
+      }
+      q += b - q;
       break;
     default:
 
-      textarea.value = textarea.value.slice(0, q) + this.innerText
+      textarea.value = textarea.value.slice(0, b) + this.innerText
       + textarea.value.slice(q, textarea.value.length);
 
-      q += 1;
+      q += b - q + 1;
   }
   this.classList.toggle('active');
   currentKeyboard();
@@ -205,6 +219,7 @@ document.addEventListener('mouseup', handlemouseUP);
 function handlekeydown(e) {
   const key1 = e.key;
   const k = keys[keycodes.indexOf(e.code)];
+  b = textarea.selectionStart;
   q = textarea.selectionEnd;
   textarea.setSelectionRange(q, q);
   textarea.focus();
@@ -231,7 +246,7 @@ function handlekeydown(e) {
       } else { document.querySelectorAll('.Ctrl')[1].classList.toggle('active'); }
       break;
     case 'Meta':
-
+      e.preventDefault();
       Array.prototype.filter.call(document.querySelectorAll('.key'), (h) => h.innerText === 'Win')[0].classList.toggle('active');
       break;
     case 'CapsLock':
@@ -242,20 +257,30 @@ function handlekeydown(e) {
       break;
     case 'Tab':
       document.querySelector('.Tab').classList.toggle('active');
-      textarea.value = `${textarea.value.slice(0, q)}\t${textarea.value.slice(q, textarea.value.length)}`;
-      q += 1;
+      textarea.value = `${textarea.value.slice(0, b)}\t${textarea.value.slice(q, textarea.value.length)}`;
+      q += b - q + 1;
       break;
     case 'Shift':
       Shift = true;
       if (e.location === 1) { document.querySelector('.Shift').classList.toggle('active'); } else { document.querySelectorAll('.Shift')[1].classList.toggle('active'); }
       break;
     case 'Delete':
-      textarea.value = textarea.value.slice(0, textarea.selectionStart)
-      + textarea.value.slice(textarea.selectionStart + 1, textarea.value.length);
+      if (b - q !== 0) {
+        textarea.value = textarea.value.slice(0, b)
+        + textarea.value.slice(q, textarea.value.length);
+      } else {
+        textarea.value = textarea.value.slice(0, b)
+      + textarea.value.slice(q + 1, textarea.value.length);
+      }
+      q += b - q;
       document.querySelector('.Del').classList.toggle('active');
       break;
     case 'Backspace':
-      if (q !== 0) {
+      if (b - q !== 0) {
+        textarea.value = textarea.value.slice(0, b)
+      + textarea.value.slice(q, textarea.value.length);
+        q += b - q;
+      } else if (q !== 0) {
         textarea.value = textarea.value.slice(0, q - 1)
       + textarea.value.slice(q, textarea.value.length);
 
@@ -268,57 +293,57 @@ function handlekeydown(e) {
       )[0].classList.toggle('active');
       break;
     case 'Enter':
-      textarea.value = `${textarea.value.slice(0, q)}\n${textarea.value.slice(q, textarea.value.length)}`;
-      q += 1;
+      textarea.value = `${textarea.value.slice(0, b)}\n${textarea.value.slice(q, textarea.value.length)}`;
+      q += b - q + 1;
       document.querySelector('.Enter').classList.toggle('active');
       break;
     case 'ArrowUp':
-      textarea.value = textarea.value.slice(0, q) + eng[3][11]
+      textarea.value = textarea.value.slice(0, b) + eng[3][11]
     + textarea.value.slice(q, textarea.value.length);
       Array.prototype.filter.call(
         document.querySelectorAll('.key'),
         (h) => h.innerText === '\u2BC5',
       )[0].classList.toggle('active');
-      q += 1;
+      q += b - q + 1;
       break;
     case 'ArrowDown':
-      textarea.value = textarea.value.slice(0, q) + eng[4][6]
+      textarea.value = textarea.value.slice(0, b) + eng[4][6]
     + textarea.value.slice(q, textarea.value.length);
       Array.prototype.filter.call(
         document.querySelectorAll('.key'),
         (h) => h.innerText === '\u2BC6',
       )[0].classList.toggle('active');
-      q += 1;
+      q += b - q + 1;
       break;
     case 'ArrowLeft':
-      textarea.value = textarea.value.slice(0, q) + eng[4][5]
+      textarea.value = textarea.value.slice(0, b) + eng[4][5]
     + textarea.value.slice(q, textarea.value.length);
       Array.prototype.filter.call(
         document.querySelectorAll('.key'),
         (h) => h.innerText === '\u2BC7',
       )[0].classList.toggle('active');
-      q += 1;
+      q += b - q + 1;
       break;
     case 'ArrowRight':
-      textarea.value = textarea.value.slice(0, q) + eng[4][7]
+      textarea.value = textarea.value.slice(0, b) + eng[4][7]
       + textarea.value.slice(q, textarea.value.length);
       Array.prototype.filter.call(
         document.querySelectorAll('.key'),
         (h) => h.innerText === '\u2BC8',
       )[0].classList.toggle('active');
-      q += 1;
+      q += b - q + 1;
       break;
     case ' ':
-      textarea.value = `${textarea.value.slice(0, q)} ${
+      textarea.value = `${textarea.value.slice(0, b)} ${
         textarea.value.slice(q, textarea.value.length)}`;
-      q += 1;
+      q += b - q + 1;
       Array.prototype.filter.call(document.querySelectorAll('.key'), (h) => h.innerText === 'Space')[0].classList.toggle('active');
       break;
     default:
       if (k !== undefined) {
-        textarea.value = textarea.value.slice(0, q) + k.innerHTML
+        textarea.value = textarea.value.slice(0, b) + k.innerHTML
       + textarea.value.slice(q, textarea.value.length);
-        q += 1;
+        q += b - q + 1;
         if (e.location === 0 || e.location === 1) {
           k.classList.toggle('active');
         } else if (e.location === 2) {
