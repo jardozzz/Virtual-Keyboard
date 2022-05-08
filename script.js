@@ -72,8 +72,12 @@ let b = textarea.selectionStart;
 let q = textarea.selectionEnd;
 let Caps = false;
 let Shift = false;
+<<<<<<< HEAD
 let currentType = eng;
 
+=======
+let currentType=eng;
+>>>>>>> d13181f (fix:find deply bug)
 function currentKeyboard() {
   if (localStorage.getItem('engLang') === 'true' && Caps === true && Shift === true) {
     currentType = engCapsShift;
